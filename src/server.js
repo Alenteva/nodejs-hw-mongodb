@@ -1,10 +1,13 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
+import { env } from './utils/env.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
 export const setupServer = () => {
   const app = express();
-  const PORT = 3000;
+  // const PORT = 3000(process.env.PORT);
+  const PORT = Number(env('PORT', '3000'));
 
   app.use(express.json());
   app.use(cors());
@@ -45,5 +48,29 @@ export const setupServer = () => {
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+  });
+
+  app.get('/contacts', async (req, res) => {
+    const contacts = await getAllContacts();
+    res.status(200).json({
+      message: 'Successfully found contacts!',
+      data: contacts,
+    });
+  });
+
+  app.get('/contacts/:_Id', async (req, res) => {
+    const { contactId } = req.params;
+    const contact = await getContactById(contactId);
+
+    if (!contact) {
+      return res.status(404).json({
+        error: `Successfully found contact with id ${contactId}!`,
+      });
+    }
+
+    res.status(200).json({
+      message: `Successfully found contact with id ${contactId}!`,
+      data: contact,
+    });
   });
 };
