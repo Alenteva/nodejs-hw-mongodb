@@ -20,7 +20,7 @@ export const errorHandler = (err, req, res, next) => {
 
 export const notFoundHandler = (err, req, res, next) => {
   res.status(404).json({
-    message: 'Route not found',
+    message: 'Contact not found',
   });
   next();
 };
