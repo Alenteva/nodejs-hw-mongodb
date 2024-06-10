@@ -7,12 +7,12 @@ const ContactSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
     email: {
       type: String,
-      optional: true,
+      // optional: true,
     },
     isFavourite: {
       type: Boolean,

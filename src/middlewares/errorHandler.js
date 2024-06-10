@@ -18,9 +18,11 @@ export const errorHandler = (err, req, res, next) => {
   next();
 };
 
-export const notFoundHandler = (err, req, res, next) => {
-  res.status(404).json({
-    message: 'Route not found',
-  });
-  next();
-};
+// export const notFoundHandler = (err, req, res, next) => {
+//   res.status(404).json({
+//     status: 404,
+//     message: 'Contact not found',
+//     data: { message: 'Contact not found' },
+//   });
+//   next();
+// };
