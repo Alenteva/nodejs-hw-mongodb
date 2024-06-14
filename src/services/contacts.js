@@ -1,13 +1,37 @@
 import { Contact } from '../db/contact.js';
 import mongoose from 'mongoose';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { SORT_ORDER } from '../index.js';
 
-export const getAllContacts = async ({ page, perPage }) => {
+export const getAllContacts = async ({
+  page,
+  perPage,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+  filter = {},
+}) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsCount = await Contact.find().countDocuments();
-  const contacts = await Contact.find().skip(skip).limit(limit).exec();
+  let contactsQuery = Contact.find();
+
+  if (filter.type) {
+    contactsQuery = contactsQuery.where('type').equals(filter.type);
+  }
+  if (typeof filter.isFavourite !== 'undefined') {
+    contactsQuery = contactsQuery
+      .where('isFavourite')
+      .equals(filter.isFavourite);
+  }
+  const contactsCount = await Contact.find()
+    .merge(contactsQuery)
+    .countDocuments();
+
+  const contacts = await Contact.find()
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
   return {
