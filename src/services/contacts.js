@@ -16,18 +16,18 @@ export const getAllContacts = async ({
   let contactsQuery = Contact.find();
 
   if (filter.type) {
-    contactsQuery = contactsQuery.where('type').equals(filter.type);
+    contactsQuery = contactsQuery.where('contactType').equals(filter.type);
   }
-  if (typeof filter.isFavourite !== 'undefined') {
-    contactsQuery = contactsQuery
-      .where('isFavourite')
-      .equals(filter.isFavourite);
+  if (filter.isFavourite === true || filter.isFavourite === false) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
-  const contactsCount = await Contact.find()
-    .merge(contactsQuery)
-    .countDocuments();
+  const countQuery = contactsQuery.clone();
 
-  const contacts = await Contact.find()
+  const contactsCount = await countQuery.countDocuments();
+
+  console.log('~contactsCount:', contactsCount);
+
+  const contacts = await contactsQuery
     .skip(skip)
     .limit(limit)
     .sort({ [sortBy]: sortOrder })
