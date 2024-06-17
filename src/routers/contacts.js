@@ -15,16 +15,16 @@ import {
 
 const router = Router();
 
-router.get('/contacts', ctrlWrapper(getContactsController));
-router.get('/contacts/:id', ctrlWrapper(getContactByIdController));
+router.get('/', ctrlWrapper(getContactsController));
+router.get('/:id', ctrlWrapper(getContactByIdController));
 router.post(
-  '/contacts',
+  '',
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
-router.delete('/contacts/:id', ctrlWrapper(deleteContactController));
+router.delete('/:id', ctrlWrapper(deleteContactController));
 router.patch(
-  '/contacts/:id',
+  '/:id',
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
