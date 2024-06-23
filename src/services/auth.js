@@ -2,17 +2,17 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
-import {
-  authErrorHendler,
-  userNotFoundHendler,
-  loginErrorHendler,
-} from '../middlewares/authErrorHendler.js';
+// import {
+//   authErrorHendler,
+//   userNotFoundHendler,
+//   loginErrorHendler,
+// } from '../middlewares/authErrorHendler.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../index.js';
 import { SessionsCollection } from '../db/models/session.js';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
-  if (user) throw createHttpError(authErrorHendler);
+  if (user) throw createHttpError(409, 'Email in use');
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
   return await UsersCollection.create({
@@ -24,12 +24,12 @@ export const registerUser = async (payload) => {
 export const loginUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
   if (!user) {
-    throw createHttpError(userNotFoundHendler);
+    throw createHttpError(404, 'User not found');
   }
   const isEqual = await bcrypt.compare(payload.password, user.password); // Порівнюємо хеші паролів
 
   if (!isEqual) {
-    throw createHttpError(loginErrorHendler);
+    throw createHttpError(401, 'Unauthorized');
   }
 
   await SessionsCollection.deleteOne({ userId: user._id });

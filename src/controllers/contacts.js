@@ -6,7 +6,7 @@ import {
   updateContact,
 } from '..//services/contacts.js';
 import createHttpError from 'http-errors';
-import { notFoundHandler } from '../middlewares/notFoundHandler.js';
+// import { notFoundHandler } from '../middlewares/notFoundHandler.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
@@ -36,7 +36,7 @@ export const getContactByIdController = async (req, res, next) => {
   const contact = await getContactById(id);
 
   if (!contact) {
-    next(createHttpError(notFoundHandler));
+    next(createHttpError(404, 'Contact not found'));
     return;
   }
   res.status(200).json({
@@ -61,7 +61,7 @@ export const patchContactController = async (req, res, next) => {
   const result = await updateContact(id, req.body);
 
   if (!result) {
-    next(createHttpError(notFoundHandler));
+    next(createHttpError(404, 'Contact not found'));
     return;
   }
   res.json({
@@ -76,7 +76,7 @@ export const deleteContactController = async (req, res, next) => {
   const contact = await deleteContact(id);
 
   if (!contact) {
-    next(createHttpError(notFoundHandler));
+    next(createHttpError(404, 'Contact not found'));
     return;
   }
   res.status(204).send();
