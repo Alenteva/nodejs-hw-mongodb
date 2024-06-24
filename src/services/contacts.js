@@ -9,11 +9,11 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  userId,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
-
-  let contactsQuery = Contact.find();
+  let contactsQuery = Contact.find({ userId });
 
   if (filter.type) {
     contactsQuery = contactsQuery.where('contactType').equals(filter.type);
@@ -21,6 +21,8 @@ export const getAllContacts = async ({
   if (filter.isFavourite === true || filter.isFavourite === false) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
+  contactsQuery.where('userId').equals(userId);
+
   const countQuery = contactsQuery.clone();
 
   const contactsCount = await countQuery.countDocuments();
@@ -40,12 +42,12 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (id) => {
+export const getContactById = async (id, userId) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }
-    const contact = await Contact.findById(id);
+    const contact = await Contact.findOne(id, userId);
     return contact;
   } catch (error) {
     console.error('Error getting contact by ID:', error);
@@ -53,17 +55,21 @@ export const getContactById = async (id) => {
   }
 };
 
-export const createContact = async (payload) => {
-  const contact = await Contact.create(payload);
+export const createContact = async (payload, userId) => {
+  const contact = await Contact.create({ ...payload, userId: userId });
   return contact;
 };
 
-export const updateContact = async (id, payload, options = {}) => {
-  const rawResult = await Contact.findOneAndUpdate({ _id: id }, payload, {
-    new: true,
-    includeResultMetadata: true,
-    ...options,
-  });
+export const updateContact = async (id, userId, payload, options = {}) => {
+  const rawResult = await Contact.findOneAndUpdate(
+    { _id: id, userId },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
   if (!rawResult || !rawResult.value) return null;
 
@@ -73,7 +79,7 @@ export const updateContact = async (id, payload, options = {}) => {
   };
 };
 
-export const deleteContact = async (id) => {
-  const contact = await Contact.findOneAndDelete({ _id: id });
+export const deleteContact = async (id, userId) => {
+  const contact = await Contact.findOneAndDelete({ _id: id, userId });
   return contact;
 };

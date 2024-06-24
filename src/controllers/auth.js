@@ -34,16 +34,6 @@ export const loginUserController = async (req, res) => {
     },
   });
 };
-export const logoutUserController = async (req, res) => {
-  if (req.cookies.sessionId) {
-    await logoutUser(req.cookies.sessionId);
-  }
-
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
-
-  res.status(204).send();
-};
 
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
@@ -71,4 +61,28 @@ export const refreshUserSessionController = async (req, res) => {
       accessToken: session.accessToken,
     },
   });
+};
+
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId)
+    await logoutUser({
+      sessionId: req.cookies.sessionId,
+      refreshToken: req.cookies.refreshToken,
+    });
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
+
+  // if (req.cookies?.sessionId && req.cookies?.refreshToken) {
+  //   await logoutUser({
+  //     sessionId: req.cookies.sessionId,
+  //     refreshToken: req.cookies.refreshToken,
+  //   });
+  //   res.clearCookie('sessionId');
+  //   res.clearCookie('refreshToken');
+  //   res.status(204).send();
+  // } else {
+  //   res.status(400).json({ error: 'No valid session found' });
+  // }
 };
