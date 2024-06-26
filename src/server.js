@@ -28,6 +28,8 @@ export const setupServer = () => {
     next();
   });
 
+  app.use(cookieParser());
+
   app.get('/', (req, res) => {
     res.json({
       message: 'Hello world!',
@@ -43,5 +45,4 @@ export const setupServer = () => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-  app.use(cookieParser());
 };
