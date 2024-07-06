@@ -51,8 +51,24 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+export const createContactController = async (req, res, next) => {
+  let photoUrl;
+  const photo = req.file;
+
+  const contact = await createContact({ ...req.body, photo: photoUrl });
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  if (!contact) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
 
   res.status(201).json({
     status: 201,
