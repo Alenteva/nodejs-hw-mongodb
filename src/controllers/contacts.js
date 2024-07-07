@@ -6,7 +6,6 @@ import {
   updateContact,
 } from '..//services/contacts.js';
 import createHttpError from 'http-errors';
-// import { notFoundHandler } from '../middlewares/notFoundHandler.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
@@ -51,24 +50,9 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res, next) => {
-  let photoUrl;
-  const photo = req.file;
-
-  const contact = await createContact({ ...req.body, photo: photoUrl });
-
-  if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
-    }
-  }
-
-  if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
-  }
+export const createContactController = async (req, res) => {
+  const { body, file } = req;
+  const contact = await createContact({ ...body, photo: file }, req.user_id);
 
   res.status(201).json({
     status: 201,
@@ -103,7 +87,6 @@ export const patchContactController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a contact!`,
-    // data: result.contact,
     data: { ...result.contact.toObject(), __v: undefined },
   });
 };
