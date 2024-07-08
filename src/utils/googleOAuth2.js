@@ -5,6 +5,7 @@ import { readFile } from 'fs/promises';
 import { env } from './env.js';
 
 import createHttpError from 'http-errors';
+// import { GOOGLE } from '../constants/index.js';
 
 const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
 
@@ -19,8 +20,8 @@ const googleOAuthClient = new OAuth2Client({
 export const generateAuthUrl = () =>
   googleOAuthClient.generateAuthUrl({
     scope: [
-      '<https://www.googleapis.com/auth/userinfo.email>',
-      //   '<https://www.googleapis.com/auth/userinfo.profile>',
+      ' https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
     ],
   });
 
