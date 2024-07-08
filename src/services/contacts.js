@@ -2,7 +2,8 @@ import { Contact } from '../db/contact.js';
 import mongoose from 'mongoose';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../index.js';
-import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+// import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllContacts = async ({
   page,
@@ -57,7 +58,7 @@ export const getContactById = async (id, userId) => {
 };
 
 export const createContact = async ({ photo, ...payload }, userId) => {
-  const url = await saveFileToUploadDir(photo);
+  const url = await saveFileToCloudinary(photo);
 
   const contact = await Contact.create({
     ...payload,
