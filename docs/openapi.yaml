@@ -8,10 +8,13 @@ info:
   description: >
      Documentation of contacts app
 tags:
-  # теги, що ви будете використовувати
+- name: Contacts
+    description: Operations about contacts.
+  - name: Auth
+    description: Auth operations.
 servers:
   - url:  http:/localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: http://example.com/api/v1
 paths:
   /contacts/{id}:
     get:
