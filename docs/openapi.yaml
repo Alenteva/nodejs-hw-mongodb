@@ -6,29 +6,28 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: >
-     Documentation of contacts app
+    Documentation of contacts app
 tags:
-- name: Contacts
-    description: Operations about contacts.
+  - name: Contacts
+    description: Operations about contacts
   - name: Auth
-    description: Auth operations.
+    description: Auth operations
 servers:
-  - url:  http:/localhost:3000
+  - url: http://localhost:3000
   - url: https://contacts-app-e7bg.onrender.com
 paths:
-  /contacts/{id}:
+  /contacts/id:
     get:
-      $ref: ../swagger/paths/contacts/{id}/get.yaml
-       patch:
-      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+      $ref: ../swagger/paths/contacts/id/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/id/patch.yaml
     delete:
-      $ref: ../swagger/paths/contacts/{id}/delete.yaml
-      /contacts:
+      $ref: ../swagger/paths/contacts/id/delete.yaml
+  /contacts:
     post:
       $ref: ../swagger/paths/contacts/post.yaml
-       get:
+    get:
       $ref: ../swagger/paths/contacts/get.yaml
-
 components:
   securitySchemes:
     bearerAuth:
