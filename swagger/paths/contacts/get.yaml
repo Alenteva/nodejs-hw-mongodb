@@ -1,27 +1,31 @@
 tags:
   - Contacts
+
 summary: Get list of contacts
 operationId: getContacts
-description: 'Get list of users with this endpoint'
+description: Get list of users with this endpoint
+
 security:
   - bearerAuth: []
+
 parameters:
   - in: query
     name: page
     schema:
       type: integer
-    example: 1
+      example: 1
   - in: query
     name: perPage
     schema:
       type: integer
       example: 10
- - in: query
+  - in: query
     name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
+
 responses:
   '200':
     description: Successfully found contacts!
@@ -39,7 +43,7 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully found scontacts!
+              example: Successfully found contacts!
             data:
               type: object
               required:
